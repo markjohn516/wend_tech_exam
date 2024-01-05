@@ -4,15 +4,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
-    <form>
-        <label>Enter Name:</label><br />
-        <input type="text" name="name" placeholder="Name" required />
-        <br /><br />
-        <button type="button">Submit</button>
-    </form>
-    
-    <div id="result">        
-    </div>
+    Hi! </br>
+    <input type="text" name="name" placeholder="Name" required /><button type="button">Submit</button>
 </body>
 </html>
 <script>
@@ -22,26 +15,28 @@
 
             $.post("http://localhost/techexamapi/insert.php", { name: name }, function (data) {
                 $("input[name=name]").val('');
-                alert(data.message);
-                fetchNames();
+                fetchName();
             })
-            .fail(function () {
-                alert("error");
-            });            
-        });   
+                .fail(function () {
+                    alert("error");
+                });
+        });
     });
 
-    function fetchNames() {
+    function fetchName() {
         $.get("http://localhost/techexamapi/fetch.php", function (data) {
-            $("#result").empty();
-            $("#result").append('<table>');
-            $.each(data, function (index, value) {                
-                $("#result").append('<tr><th>' + value.name + '</th></tr>');
+            $("input").prev().remove();
+            $("<span>Hi " + data.name + "! </br></span>").insertBefore("input");
+
+            $('body')
+                .contents()
+                .filter(function () {
+                    return this.nodeType == 3; //Node.TEXT_NODE
+                }).remove();
+
+        })
+            .fail(function () {
+                alert("error");
             });
-            $("#result").append('</table>');
-        })        
-        .fail(function () {
-            alert("error");
-        });
-    } 
+    }
 </script>
